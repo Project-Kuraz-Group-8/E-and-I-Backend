@@ -23,7 +23,7 @@ return new class extends Migration
             $table->float('current_amount');
             $table->float('goal_amount');
             $table->string('category');
-            $table->boolean('visibility');
+            $table->boolean('visibility')->default(0);
             $table->string('status');
             $table->timestamps();
         });
