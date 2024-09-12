@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('investor_id')->references('id')->on('investors');
             $table->foreignId('startup_id')->references('id')->on('startups');
-            $table->text('interest_message')->default('I am interested in your startup idea.');
+            $table->text('interest_message');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();
         });
