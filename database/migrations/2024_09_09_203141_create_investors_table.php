@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('investment_experience')->default(0);
             $table->decimal('investment_interest')->nullable();
             $table->longText('company_description');
-
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
