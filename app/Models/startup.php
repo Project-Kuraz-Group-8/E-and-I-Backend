@@ -25,6 +25,7 @@ class startup extends Model
         'visibility',
         'status'
     ];
+    
 
     // Relationship to User
     public function user()
