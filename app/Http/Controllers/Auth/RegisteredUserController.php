@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Casts\Json;
 
 class RegisteredUserController extends Controller
 {
@@ -46,5 +49,54 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+    public function loginAPI(Request $request): JsonResponse {
+        // Validate user data.
+        $incomingFields = Validator::make($request->all(),[
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required'],
+        ]);
+        if ($incomingFields->fails()) {
+            return response()->json($incomingFields->errors(), 422);
+        }
+        // Try to log in.
+        if (Auth::attempt($incomingFields)){
+            $user = User::where('email', '=', $incomingFields['email'])->first();
+            $user_token = $user->createToken('e_and_i')->plainTextToken;
+            return response()->json([
+            'user' => $user,
+            'token' => $user_token,
+        ]);
+        }
+        return response()->json([
+            'message' => 'Invalid email or password.'
+        ], 401);
+    }
+    public function registerAPI(Request $request): JsonResponse {
+       
+        // Validate request data
+    
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'phone_number' => 'required|min:10|max:13',
+            'role' => 'required',
+            'location' => 'string'
+        ]);
+        if ($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'role' => $request->role,
+            'location' => $request->location,
+        ]);
+        return response()->json([
+            'message' => 'User registered successfully!',
+        ], 201);
     }
 }

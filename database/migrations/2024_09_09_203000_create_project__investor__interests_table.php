@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('project_investor_interests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('investor_id')->references('id')->on('investors');
-            $table->foreignId('startup_id')->references('id')->on('startups');
+            $table->unsignedBigInteger('investor_id');
+            $table->unsignedBigInteger('startup_id');
+            $table->foreign('investor_id')->references('id')->on('investors');
+            $table->foreign('startup_id')->references('id')->on('startups');
             $table->text('interest_message');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
             $table->timestamps();

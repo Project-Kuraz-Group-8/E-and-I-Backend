@@ -13,16 +13,14 @@ return new class extends Migration
     {
         Schema::create('startups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->constrained();
             $table->string('title');
             $table->longText('description');
+            $table->longText('team_members');
             $table->decimal('goal_amount');
             $table->decimal('current_amount');
-            $table->enum('category', ['AI', 'Tech', 'Health', '3D']);
+            $table->enum('category', ['AI', 'Agriculture', 'Tech', 'Health', '3D', 'Manufacturing', 'Transportation']);
             $table->enum('status', ['open', 'funded', 'closed']);
-            $table->string('pitch_deck_url');
-            $table->string('business_plan_url');
-            $table->boolean('visibility')->default(false);
             $table->timestamps();
         });
     }
