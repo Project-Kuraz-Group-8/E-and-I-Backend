@@ -11,6 +11,7 @@ class Investor extends Model
     use HasFactory, Searchable;
     protected $fillable = [
         'user_id',
+        'investor_type',
         'investment_experience',
         'investment_interest',
         'company_description',

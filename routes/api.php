@@ -22,3 +22,4 @@ Route::get('/notifications', [UserController::class, 'getNotifications'])->middl
 Route::post('/notifications/{notification_id}/response', [UserController::class, 'investmentResponse'])->middleware('auth:sanctum');
 Route::get('/profile/{id}', [ProfileController::class, 'user_profile_data']);
 Route::post('/profile/{id}/create', [ProfileController::class, 'filterer'])->middleware('auth:sanctum');
+
