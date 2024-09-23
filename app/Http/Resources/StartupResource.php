@@ -18,7 +18,6 @@ class StartupResource extends JsonResource
         // return parent::toArray($request);
         return[
             'id' => $this -> id,
-            'user_id' => $this ->user_id,
             'title' => $this ->tittle,
             'description' => $this ->description,
             'funding_stage' => $this ->funding_stage,

@@ -11,7 +11,6 @@ class startup extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'user_id',
         'title',
         'description',
