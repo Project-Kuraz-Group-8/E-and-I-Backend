@@ -50,23 +50,20 @@ class RegisteredUserController extends Controller
 
         return redirect(route('dashboard', absolute: false));
     }
-    public function loginAPI(Request $request): JsonResponse {
+    public function loginAPI(Request $request): string {
         // Validate user data.
         $incomingFields = Validator::make($request->all(),[
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
             'password' => ['required'],
         ]);
         if ($incomingFields->fails()) {
             return response()->json($incomingFields->errors(), 422);
         }
         // Try to log in.
-        if (Auth::attempt($incomingFields)){
-            $user = User::where('email', '=', $incomingFields['email'])->first();
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+            $user = User::where('email', '=', $request->email)->first();
             $user_token = $user->createToken('e_and_i')->plainTextToken;
-            return response()->json([
-            'user' => $user,
-            'token' => $user_token,
-        ]);
+            return $user_token;
         }
         return response()->json([
             'message' => 'Invalid email or password.'
@@ -75,12 +72,11 @@ class RegisteredUserController extends Controller
     public function registerAPI(Request $request): JsonResponse {
        
         // Validate request data
-    
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'phone_number' => 'required|min:10|max:13',
+            'phone_number' => 'required|min:9',
             'role' => 'required',
             'location' => 'string'
         ]);

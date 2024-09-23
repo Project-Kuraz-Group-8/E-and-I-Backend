@@ -6,10 +6,13 @@ use App\Models\User;
 use App\Models\Startup;
 use App\Models\Investor;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\InvestmentInterest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Notifications\InvestmentAccepted;
 use App\Notifications\InvestmentRejected;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Notifications\DatabaseNotification;
 
 class UserController extends Controller
@@ -22,27 +25,40 @@ class UserController extends Controller
         if (Auth::attempt($incoming_fields)){
             $user = User::where('email', $incoming_fields['email'])->first();
             $token = $user->createToken('e_and_i')->plainTextToken;
-            return response()->json([
-                'token' => $token
-            ]);
+            return $token;
         }
         return response()->json([
             'message' => 'Invalid email or password'
         ], 401);
     }
 
-    public function registerAPI(Request $request) {
-        $incoming_fields = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
-            'role' => 'required|string',
-            'location' => 'required|string',
-            'phone_number' => 'required|string',
-            'bio' => 'nullable|string',
+    public function registerAPI(Request $request): JsonResponse {
+       
+        // Validate request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'phone_number' => 'required|min:9',
+            'role' => 'required',
+            'location' => 'string',
+            'bio' => 'nullable|string'
         ]);
-        User::create($incoming_fields);
-        return redirect('/login');
+        if ($validator->fails()){
+            return response()->json($validator->errors(), 422);
+        }
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'role' => $request->role,
+            'location' => $request->location,
+            'bio' => $request->bio
+        ]);
+        return response()->json([
+            'message' => 'User registered successfully!',
+        ], 201);
     }
     public function getNotifications() {
         $user = Auth::user();
@@ -89,6 +105,11 @@ class UserController extends Controller
             return response()->json(['message' => 'Invalid response.'], 400);
         }
 
+    }
+    public function logoutAPI(Request $request) {
+        // Revoke the token that was used to authenticate the current request
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
 }

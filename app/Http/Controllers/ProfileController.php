@@ -34,9 +34,25 @@ class ProfileController extends Controller
         }
         return response()->json($data);
     }
+    public function investor_data() : JsonResponse{
+        $data = Investor::where('user_id', Auth::user()->id)->first();
+        if (!$data) {
+            return response()->json(['message' => 'No data found.'], 404);
+        }
+        return response()->json($data);
+    }
 
-    public function delete_startup() {
+    public function edit_startup() {
+        
+    }
 
+    public function edit_investor_data() {
+
+    }
+
+    public function delete_startup(Startup $id) {
+        $id->delete();
+        return response()->json(['message' => 'Startup deleted successfully.']);
     }
 
 
@@ -72,7 +88,7 @@ class ProfileController extends Controller
         return response()->json(['message' => 'Startup created successfully.'], 201);
 
     }
-    public function filterer(Request $request) {
+    public function create_filterer(Request $request) : JsonResponse{
         $data = $request->all();
         if (Auth::user()->role === 'investor') {
             return $this->fill_investor_info($data);
@@ -80,9 +96,18 @@ class ProfileController extends Controller
         else if (Auth::user()->role === 'entrepreneur') {
             return $this->create_startup($data);
         }
-        else return response()->json(["message" => 'no such user exists.']);
+        else return response()->json(["message" => 'no such user exists.'], 404);
     }
-
+    public function update_filterer(Request $request) {
+        $data = $request->all();
+        if (Auth::user()->role === 'entrepreneur') {
+            $this->edit_startup($data);
+        }
+        else if (Auth::user()->role === 'investor'){
+            $this->edit_investor_data($data);
+        }
+        return response()->json(['message' => 'no such user exists.']);
+    }
     /**
      * Update the user's profile information.
      */
