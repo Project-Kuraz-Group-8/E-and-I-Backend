@@ -23,15 +23,17 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $role = ['entrepreneur', 'investor'];
+        $location = ['Addis Ababa', 'Hawassa', 'Mekelle', 'Dilla', 'Jimma', 'Bahir Dar', 'Debre Birhan', 'Gondar'];
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => 'entrepreneur',
-            'location' => 'Addis Ababa',
+            'role' => $role[rand(0,1)],
+            'location' => $location[rand(0,7)],
             'phone_number' => Str::random(10),
-            'bio' => Str::random(10),
+            'bio' => 'factory data here.',
         ];
     }
 

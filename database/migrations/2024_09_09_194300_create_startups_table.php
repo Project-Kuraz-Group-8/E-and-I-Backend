@@ -19,8 +19,8 @@ return new class extends Migration
             $table->longText('team_members');
             $table->decimal('goal_amount');
             $table->decimal('current_amount');
-            $table->enum('category', ['AI', 'Agriculture', 'Tech', 'Health', '3D', 'Manufacturing', 'Transportation']);
-            $table->enum('status', ['open', 'funded', 'closed']);
+            $table->string('category');
+            $table->string('status');
             $table->timestamps();
         });
     }

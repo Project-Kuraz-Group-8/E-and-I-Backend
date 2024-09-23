@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Project_Investor_Interests extends Model
 {
     use HasFactory;
+    
 }

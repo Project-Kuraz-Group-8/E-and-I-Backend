@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
+use App\Models\User;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -19,6 +21,23 @@ class ProfileController extends Controller
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
+    }
+
+    public function user_profile_data($id) : JsonResponse {
+        $data = User::where('id', $id)->first();
+        return response()->json($data);
+    }
+
+    private function investorCreate($request){
+        
+    }
+    private function entrepreneurCreate($request){
+        //hfadsjh
+    }
+    public function filterer(Request $request) {
+        if ($request->role === 'investor') {
+            $this->investorCreate('sa');
+        }
     }
 
     /**
