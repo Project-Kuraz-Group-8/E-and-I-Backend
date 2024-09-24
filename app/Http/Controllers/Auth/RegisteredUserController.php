@@ -90,6 +90,7 @@ class RegisteredUserController extends Controller
             'phone_number' => $request->phone_number,
             'role' => $request->role,
             'location' => $request->location,
+            'bio' => $request->bio
         ]);
         return response()->json([
             'message' => 'User registered successfully!',

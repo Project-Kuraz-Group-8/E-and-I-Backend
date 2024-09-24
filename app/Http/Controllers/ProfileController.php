@@ -42,7 +42,7 @@ class ProfileController extends Controller
         return response()->json($data);
     }
 
-    public function edit_startup() {
+    public function edit_startup($data) {
         
     }
 
@@ -90,20 +90,20 @@ class ProfileController extends Controller
     }
     public function create_filterer(Request $request) : JsonResponse{
         $data = $request->all();
-        if (Auth::user()->role === 'investor') {
+        if (Auth::user()->role === 'investor' or Auth::user()->role === 'Investor') {
             return $this->fill_investor_info($data);
         }
-        else if (Auth::user()->role === 'entrepreneur') {
+        else if (Auth::user()->role === 'entrepreneur' or Auth::user()->role === 'Entrepreneur') {
             return $this->create_startup($data);
         }
         else return response()->json(["message" => 'no such user exists.'], 404);
     }
     public function update_filterer(Request $request) {
         $data = $request->all();
-        if (Auth::user()->role === 'entrepreneur') {
+        if (Auth::user()->role === 'entrepreneur' or Auth::user()->role === 'Entrepreneur') {
             $this->edit_startup($data);
         }
-        else if (Auth::user()->role === 'investor'){
+        else if (Auth::user()->role === 'investor' or Auth::user()->role === 'Investor'){
             $this->edit_investor_data($data);
         }
         return response()->json(['message' => 'no such user exists.']);
