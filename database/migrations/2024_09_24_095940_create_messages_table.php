@@ -16,6 +16,7 @@ return new class extends Migration
             $table->longText('message')->nullable();
             $table->foreignId('sender_id')->constrained('users');
             $table->foreignId('receiver_id')->constrained('users');
+            $table->foreignId('conversation_id')->constrained('conversations');
             $table->string('file')->nullable();
             $table->timestamps();
         });

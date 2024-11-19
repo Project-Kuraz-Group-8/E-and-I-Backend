@@ -64,7 +64,7 @@ class User extends Authenticatable
 
                                                     });
                                         })->whereNotNull('conversations.id') 
-                                        ->leftjoin('messages', 'messages.id', '=', 'conversations.last_message_id')
+                                        ->leftjoin('messages', 'messages.conversation_id', '=', 'conversations.id')
                                           ->orderBy('messages.created_at', 'desc')
                                           ->orderBy('users.name');
 
